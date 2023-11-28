@@ -1,26 +1,24 @@
 import os
 import cv2
-import json
 import numpy as np
 
 from PIL import ImageFont, Image, ImageDraw
 from django.conf import settings
-from django.core.handlers.wsgi import WSGIRequest
 
 from app.models import History
 
 
-def runtext_service(request: WSGIRequest, runtext_vo):
-    video_response = create_video_from_string(runtext_vo)
+def runtext_service(runtext_line: str) -> bytes:
+    video_response = create_video_from_string(runtext_line)
 
     History.objects.create(
-        request_url=request.get_full_path(),
+        request_text=runtext_line,
     )
 
     return video_response
 
 
-def create_video_from_string(string_variable):
+def create_video_from_string(runtext_line: str) -> bytes:
     width, height = 100, 100
     fps = 30
     duration = 3
@@ -33,7 +31,7 @@ def create_video_from_string(string_variable):
 
     frames = np.zeros((duration * fps, height, width, 3), dtype=np.uint8)
 
-    text_width = font.getlength(text=string_variable)
+    text_width = font.getlength(text=runtext_line)
     speed = text_width * speed_factor / duration
 
     for i in range(duration * fps):
@@ -42,7 +40,7 @@ def create_video_from_string(string_variable):
         text_position_y = (height) // 2
         image = Image.fromarray(frame)
         draw = ImageDraw.Draw(image)
-        draw.text((text_position_x, text_position_y), string_variable, font=font, fill=text_color)
+        draw.text((text_position_x, text_position_y), runtext_line, font=font, fill=text_color)
         frame = np.array(image)
         frames[i] = frame
 
