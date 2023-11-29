@@ -55,7 +55,6 @@ def create_video_from_string(runtext_line: str) -> bytes:
     with open(video_path, 'rb') as video_file:
         video_data = video_file.read()
 
-    # os.system(f'rm -rf {temp_dir}')
-    os.system(f'rd /Q/s {temp_dir}')
-    os.system(f'del {output_file}')
+    os.system(f'rm -rf {temp_dir}')
+    os.system(f'rm {output_file}')
     return video_data
