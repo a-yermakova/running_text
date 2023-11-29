@@ -1,7 +1,10 @@
 .PHONY: migrate makemigrations test run clean
 
+build:
+	docker-compose build
+
 start:
 	docker-compose up
 
 test:
-	docker-compose run --rm it_solution python manage.py pytest .
+	docker-compose run web poetry run pytest .
