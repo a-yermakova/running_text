@@ -25,19 +25,18 @@ def create_video_from_string(runtext_line: str) -> bytes:
 
     font = ImageFont.truetype("fonts/calibri.ttf", 35)
     text_color = (255, 255, 255)
-    speed_factor = 1.3
 
     output_file = 'output.mp4'
 
     frames = np.zeros((duration * fps, height, width, 3), dtype=np.uint8)
 
     text_width = font.getlength(text=runtext_line)
-    speed = text_width * speed_factor / duration
+    speed = (width + text_width) / duration
 
     for i in range(duration * fps):
         frame = np.zeros((height, width, 3), dtype=np.uint8)
         text_position_x = int(width - (i / fps) * speed)
-        text_position_y = (height) // 2
+        text_position_y = height // 2
         image = Image.fromarray(frame)
         draw = ImageDraw.Draw(image)
         draw.text((text_position_x, text_position_y), runtext_line, font=font, fill=text_color)
